@@ -10,6 +10,11 @@ const {
 function createHandler(req, res) {
   const { body } = req;
 
+  // Verifica que los campos necesarios estén presentes
+  if (!body.name || !body.type) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
   try {
     const asset = createAsset(body);
     res.status(201).json(asset);
@@ -17,6 +22,7 @@ function createHandler(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
 
 function deleteHandler(req, res) {
   const { id } = req.params;
@@ -69,14 +75,18 @@ function updateHandler(req, res) {
   try {
     const asset = updateAsset(Number(id), body);
     if (!asset) {
-      res.status(404).json({ error: 'Asset not found' });
-      return;
+      return res.status(404).json({ error: 'Asset not found' });
     }
-    res.json(asset);
+    res.status(200).json(asset); // Asegúrate de enviar el asset actualizado
   } catch (error) {
+    // Manejar errores específicos aquí, si es necesario
+    if (error.message === 'Asset not found') {
+      return res.status(404).json({ error: 'Asset not found' });
+    }
     res.status(500).json({ error: error.message });
   }
 }
+
 
 module.exports = {
   createHandler,
