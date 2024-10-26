@@ -52,16 +52,17 @@ function createAsset(asset) {
   return asset;
 }
 
-function updateAsset(id, asset) {
+function updateAsset(id, assetData) {
   const index = assets.findIndex((asset) => asset.id === id);
 
   if (index === -1) {
     return null;
   }
 
-  assets[index] = asset;
+  // Actualización parcial manteniendo el resto de los datos originales
+  assets[index] = { ...assets[index], ...assetData };
 
-  return asset;
+  return assets[index];
 }
 
 function deleteAsset(id) {

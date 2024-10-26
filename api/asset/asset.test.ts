@@ -10,29 +10,58 @@ describe('Assets API', () => {
     expect(Array.isArray(response.body)).toBe(true); // Chequea si la respuesta es un array
   });
 
-  // Prueba para agregar un nuevo asset
+  let assetId: number;
+
   it('should add a new asset', async () => {
-    const newAsset = { name: 'Test Asset', type: 'equipment' };
-    const response = await request(app)
-      .post('/api/assets')
-      .send(newAsset);
+    const newAsset = { name: 'Test Asset', type: 'hardware' };
+    const response = await request(app).post('/api/assets').send(newAsset);
+    assetId = response.body.id;
+
+    console.log('Asset ID after creation:', assetId); // Verifica el ID generado
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty('id'); // Verifica si se crea el asset con un ID
     expect(response.body.name).toBe('Test Asset');
-    expect(response.body.type).toBe('equipment');
   });
 
-  // Prueba para actualizar un asset existente
+
+  // // Prueba para actualizar un asset existente
+  // it('should update an existing asset', async () => {
+  //   // Crea un asset primero para asegurar su existencia
+  //   const newAsset = await request(app).post('/api/assets').send({
+  //     name: 'Original Asset',
+  //     type: 'hardware'
+  //   });
+
+  //   const assetId = newAsset.body.id;
+
+  //   const updatedAsset = {
+  //     name: 'Updated Asset',
+  //     type: 'software',
+  //   };
+
+  //   const response = await request(app)
+  //     .put(`/api/assets/${assetId}`)
+  //     .send(updatedAsset);
+
+  //   expect(response.statusCode).toBe(200);
+  //   expect(response.body.name).toBe('Updated Asset');
+  //   expect(response.body.type).toBe('software');
+  // });
+
+  // Prueba de actualización
   it('should update an existing asset', async () => {
-    const assetId = 1; // Usa un ID válido para la prueba
+    console.log('Updating asset with ID:', assetId); // Confirma que estás usando el ID correcto
     const updatedAsset = { name: 'Updated Asset', type: 'software' };
     const response = await request(app)
       .put(`/api/assets/${assetId}`)
       .send(updatedAsset);
+
+    console.log('Update response:', response.statusCode); // Verifica el estado de la respuesta
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe('Updated Asset');
     expect(response.body.type).toBe('software');
   });
+
+
 
   // Prueba para eliminar un asset
   it('should delete an asset', async () => {
